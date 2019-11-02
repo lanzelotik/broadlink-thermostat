@@ -639,7 +639,7 @@ class hysen(device):
   # E.g. loop_mode = 0 ("12345,67") means Saturday and Sunday follow the "weekend" schedule
   # loop_mode = 2 ("1234567") means every day (including Saturday and Sunday) follows the "weekday" schedule
   # The sensor command is currently experimental
-  def set_mode(self, auto_mode, loop_mode,sensor=0):
+  def set_mode(self, auto_mode, loop_mode,sensor=1):
     mode_byte = ( (loop_mode + 1) << 4) + auto_mode
     # print 'Mode byte: 0x'+ format(mode_byte, '02x')
     self.send_request(bytearray([0x01,0x06,0x00,0x02,mode_byte,sensor]))
