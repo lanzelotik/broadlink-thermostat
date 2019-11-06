@@ -89,9 +89,9 @@ class ReadDevice(Process):
                 self.device.set_time(now.hour, now.minute, now.second, now.weekday()+1)
                 print('set time %d:%d:%d %d' % (now.hour, now.minute, now.second, now.weekday()+1))
                 # set auto_mode = 0, loop_mode = 0 ("12345,67")
-                self.device.set_mode(self.conf.get('auto_mode', 0), self.conf.get('loop_mode', 0))
+                #self.device.set_mode(self.conf.get('auto_mode', 0), self.conf.get('loop_mode', 0))
                 # set device on, remote_lock off
-                self.device.set_power(1, self.conf.get('remote_lock', 0))
+                #self.device.set_power(1, self.conf.get('remote_lock', 0))
             else:
                 self.run = False
             while self.run:
@@ -106,6 +106,8 @@ class ReadDevice(Process):
                                 self.device.set_mode(0 if int(opts) == 0 else 1, self.conf.get('loop_mode', 0))
                             elif cmd=='set_power':
                                 self.device.set_power(0 if int(opts) == 0 else 1, self.conf.get('remote_lock', 0))
+                            elif cmd=='set_status':
+                                self.device.set_status(int(opts))
                             elif cmd=='switch_to_auto':
                                 self.device.switch_to_auto()
                             elif cmd=='switch_to_manual':
@@ -139,7 +141,7 @@ class ReadDevice(Process):
                                 if key == 'room_temp':
                                     print "  {} {} {}".format(self.divicemac, key, data[key])
                                 mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, key), data[key], qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
-                        mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, 'schedule'), json.dumps([data['weekday'],data['weekend']]), qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
+                        #mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, 'schedule'), json.dumps([data['weekday'],data['weekend']]), qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
                 except Exception, e:
                     unhandeledException(e)
                     mqttc.loop_stop()

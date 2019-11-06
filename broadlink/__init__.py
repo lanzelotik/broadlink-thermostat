@@ -619,6 +619,12 @@ class hysen(device):
     data['min'] =  payload[20]
     data['sec'] =  payload[21]
     data['dayofweek'] =  payload[22]
+    if data['power'] == 0:
+        data['status'] = 0
+    elif data['auto_mode'] == 0:
+        data['status'] = 1
+    else:
+        data['status'] = 2
     
     weekday = []
     for i in range(0, 6):
@@ -655,6 +661,17 @@ class hysen(device):
   def set_advanced(self, loop_mode, sensor, osv, dif, svh, svl, adj, fre, poweron):
     input_payload = bytearray([0x01,0x10,0x00,0x02,0x00,0x05,0x0a, loop_mode, sensor, osv, dif, svh, svl, (int(adj*2)>>8 & 0xff), (int(adj*2) & 0xff), fre, poweron])
     self.send_request(input_payload)
+
+  def set_status(self, status):
+    if status == 1:
+        self.set_power(power=1)
+        self.set_mode(auto_mode=0, loop_mode=0)
+      elif status == 3:
+          self.set_power(power=1)
+          self.set_mode(auto_mode=0, loop_mode=0)
+      else:
+          self.set_power(power=0)
+
 
   # For backwards compatibility only
   def switch_to_auto(self):
