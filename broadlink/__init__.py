@@ -668,7 +668,7 @@ class hysen(device):
         self.set_mode(auto_mode=0, loop_mode=0)
     elif status == 3:
       self.set_power(power=1)
-      self.set_mode(auto_mode=0, loop_mode=0)
+      self.set_mode(auto_mode=1, loop_mode=0)
     else:
       self.set_power(power=0)
 
