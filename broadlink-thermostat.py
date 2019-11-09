@@ -107,6 +107,7 @@ class ReadDevice(Process):
                             elif cmd=='set_power':
                                 self.device.set_power(0 if int(opts) == 0 else 1, self.conf.get('remote_lock', 0))
                             elif cmd=='set_status':
+                                print opts
                                 self.device.set_status(int(opts))
                             elif cmd=='switch_to_auto':
                                 self.device.switch_to_auto()

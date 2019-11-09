@@ -664,12 +664,12 @@ class hysen(device):
 
   def set_status(self, status):
     if status == 1:
-        self.set_power(power=1)
         self.set_mode(auto_mode=0, loop_mode=0)
+        self.set_power(power=1)
     elif status == 3:
       print 'Auto mode active'
-      self.set_power(power=1)
       self.set_mode(auto_mode=1, loop_mode=0)
+      self.set_power(power=1)
     else:
       self.set_power(power=0)
 
