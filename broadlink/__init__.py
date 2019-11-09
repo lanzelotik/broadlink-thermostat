@@ -620,8 +620,8 @@ class hysen(device):
     data['sec'] =  payload[21]
     data['dayofweek'] =  payload[22]
 
-    print data['power']
-    print data['auto_mode']
+    print('power %d' % (data['power']))
+    print('auto_mode %d' % (data['auto_mode']))
 
     if data['power'] == 0:
         data['status'] = 0
