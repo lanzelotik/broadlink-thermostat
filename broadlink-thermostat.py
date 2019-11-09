@@ -124,7 +124,7 @@ class ReadDevice(Process):
                                 mqttc.loop_stop()
                                 return
                     else:
-                        self.get_info
+                        self.get_info()
                 except Exception, e:
                     unhandeledException(e)
                     mqttc.loop_stop()
