@@ -620,26 +620,23 @@ class hysen(device):
     data['sec'] =  payload[21]
     data['dayofweek'] =  payload[22]
 
-    print('power %d' % (data['power']))
-    print('auto_mode %d' % (data['auto_mode']))
-
     if data['power'] == 0:
         data['status'] = 0
     elif data['auto_mode'] == 0:
         data['status'] = 1
     else:
-        data['status'] = 2
+        data['status'] = 3
     
-    weekday = []
-    for i in range(0, 6):
-      weekday.append({'start_hour':payload[2*i + 23], 'start_minute':payload[2*i + 24],'temp':payload[i + 39]/2.0})
+    #weekday = []
+    #for i in range(0, 6):
+    #  weekday.append({'start_hour':payload[2*i + 23], 'start_minute':payload[2*i + 24],'temp':payload[i + 39]/2.0})
     
-    data['weekday'] = weekday
-    weekend = []
-    for i in range(6, 8):
-      weekend.append({'start_hour':payload[2*i + 23], 'start_minute':payload[2*i + 24],'temp':payload[i + 39]/2.0})
+    #data['weekday'] = weekday
+    #weekend = []
+    #for i in range(6, 8):
+    #  weekend.append({'start_hour':payload[2*i + 23], 'start_minute':payload[2*i + 24],'temp':payload[i + 39]/2.0})
 
-    data['weekend'] = weekend
+    #data['weekend'] = weekend
     return data
 
   # Change controller mode
