@@ -165,8 +165,6 @@ class ReadDevice(Process):
             unhandeledException(e)
             mqttc.loop_stop()
             return
-    def get_info(self):
-
 def main():
     try:
         conf = Config()
