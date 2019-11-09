@@ -96,6 +96,7 @@ class ReadDevice(Process):
                 self.run = False
             while self.run:
                 try:
+                    needUpdateStatus = False
                     if self.pipe.poll(self.conf.get('loop_time', 60)):
                         result = self.pipe.recv()
                         if type(result) == tuple and len(result) == 2:
@@ -108,6 +109,8 @@ class ReadDevice(Process):
                                 self.device.set_power(0 if int(opts) == 0 else 1, self.conf.get('remote_lock', 0))
                             elif cmd=='set_status':
                                 self.device.set_status(int(opts))
+                                if int(opts) == 3:
+                                    needUpdateStatus = True
                             elif cmd=='switch_to_auto':
                                 self.device.switch_to_auto()
                             elif cmd=='switch_to_manual':
@@ -124,7 +127,28 @@ class ReadDevice(Process):
                                 mqttc.loop_stop()
                                 return
                     else:
-                        self.get_info()
+
+                    if needUpdateStatus == True:
+                        try:
+                            data = self.device.get_full_status()
+                        except socket.timeout:
+                            mqttc.loop_stop()
+                            return
+                        except Exception, e:
+                            unhandeledException(e)
+                            mqttc.loop_stop()
+                            return
+                        for key in data:
+                            if type(data[key]).__name__ == 'list':
+                                mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, key), json.dumps(data[key]), qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
+                                pass
+                            else:
+                                if key == 'room_temp':
+                                    print "  {} {} {}".format(self.divicemac, key, data[key])
+                                elif key == 'status':
+                                    print "  {} {} {}".format(self.divicemac, key, data[key])
+                                mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, key), data[key], qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
+                        #mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, 'schedule'), json.dumps([data['weekday'],data['weekend']]), qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
                 except Exception, e:
                     unhandeledException(e)
                     mqttc.loop_stop()
@@ -141,25 +165,7 @@ class ReadDevice(Process):
             mqttc.loop_stop()
             return
     def get_info(self):
-        try:
-            data = self.device.get_full_status()
-        except socket.timeout:
-            mqttc.loop_stop()
-            return
-        except Exception, e:
-            unhandeledException(e)
-            mqttc.loop_stop()
-            return
-        for key in data:
-            if type(data[key]).__name__ == 'list':
-                mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, key), json.dumps(data[key]), qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
-                pass
-            else:
-                if key == 'room_temp':
-                    print "  {} {} {}".format(self.divicemac, key, data[key])
-                elif key == 'status':
-                    print "  {} {} {}".format(self.divicemac, key, data[key])
-                mqttc.publish('%s/%s/%s'%(self.conf.get('mqtt_topic_prefix', '/broadlink'), self.divicemac, key), data[key], qos=self.conf.get('mqtt_qos', 0), retain=self.conf.get('mqtt_retain', False))
+
 def main():
     try:
         conf = Config()
