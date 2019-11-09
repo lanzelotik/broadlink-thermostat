@@ -127,6 +127,7 @@ class ReadDevice(Process):
                                 mqttc.loop_stop()
                                 return
                     else:
+                        needUpdateStatus = True
 
                     if needUpdateStatus == True:
                         try:
