@@ -619,6 +619,10 @@ class hysen(device):
     data['min'] =  payload[20]
     data['sec'] =  payload[21]
     data['dayofweek'] =  payload[22]
+
+    print data['power']
+    print data['auto_mode']
+
     if data['power'] == 0:
         data['status'] = 0
     elif data['auto_mode'] == 0:
@@ -667,7 +671,6 @@ class hysen(device):
         self.set_mode(auto_mode=0, loop_mode=0)
         self.set_power(power=1)
     elif status == 3:
-      print 'Auto mode active'
       self.set_mode(auto_mode=1, loop_mode=0)
       self.set_power(power=1)
     else:
